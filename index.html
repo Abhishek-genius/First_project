@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Image Upload & Search</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    header, footer { background: #333; color: white; text-align: center; padding: 15px; }
+    main { padding: 20px; text-align: center; }
+    form { margin: 20px auto; }
+    img { margin-top: 20px; border: 2px solid #555; border-radius: 8px; }
+    button { padding: 10px 20px; background: #007BFF; color: white; border: none; cursor: pointer; }
+    button:hover { background: #0056b3; }
+    .matches { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:18px; }
+    .match-card { width:150px; text-align:center; }
+    .match-card img { width:150px; height:150px; object-fit:cover; border-radius:6px; border:1px solid #ccc; }
+    .controls { margin-top:12px; }
+    input[type="number"] { width:80px; padding:6px; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Face Recognition — HCL Group 2</h1>
+  </header>
+
+  <main>
+    <h2>Upload an Image</h2>
+
+    <!-- Upload form -->
+    <form action="/upload" method="post" enctype="multipart/form-data">
+      <input type="file" name="file" accept="image/*" required>
+      <button type="submit">Upload</button>
+    </form>
+
+    {% if msg %}
+      <p>{{ msg }}</p>
+    {% endif %}
+
+    <!-- If file uploaded: show preview + search controls -->
+    {% if file_url %}
+      <h3>Uploaded Image Preview:</h3>
+      <img src="{{ file_url }}" alt="Uploaded Image" width="300">
+
+      <div class="controls">
+        <form action="/search" method="post" style="margin-top:10px;">
+          <!-- send only the filename, threshold and top_k -->
+          <input type="hidden" name="filename" value="{{ filename }}">
+          <label>Threshold (0..1): <input type="number" step="0.01" min="0" max="1" name="threshold" value="{{ threshold or 0.8 }}"></label>
+          &nbsp;
+          <label>Top K: <input type="number" name="top_k" min="1" max="500" value="{{ top_k or 50 }}"></label>
+          &nbsp;
+          <button type="submit">Search</button>
+        </form>
+      </div>
+    {% endif %}
+
+    <!-- show results -->
+    {% if matches %}
+      <h3>Matches ({{ matches|length }}):</h3>
+      <div class="matches">
+        {% for m in matches %}
+          <div class="match-card">
+            <img src="{{ m.url }}" alt="match-{{ loop.index }}">
+            <div style="font-size:13px;">Score: {{ '%.3f'|format(m.score) }}</div>
+            {% if m.meta and m.meta.filename %}
+              <div style="font-size:11px; color:#666;">{{ m.meta.filename|truncate(24) }}</div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% elif searched %}
+      <p>No matches above the threshold.</p>
+    {% endif %}
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Face Search App</p>
+  </footer>
+
+</body>
+</html>
