@@ -1,0 +1,78 @@
+/* Tailwind base imports */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Apna custom style yaha likh */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(to right, #2e026d, #15162c);
+  color: white;
+}
+
+/* -----------------------
+   Image container fixes
+   Paste this block at the end of index.css
+   ----------------------- */
+
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  /* If your preview card has a known height, set max-height accordingly.
+     Otherwise it will scale based on parent container. */
+  max-height: 420px; /* adjust this value to match your card height */
+  overflow: hidden;
+  background: transparent;
+  border-radius: 8px;
+}
+
+/* Use this class on the img element inside .image-container */
+.image-container img,
+.image-container .preview-image {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* Optional aspect-box helper: keeps container ratio (use when needed) */
+.aspect-box {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 ratio - change if you want 4:3 or 1:1 */
+  overflow: hidden;
+}
+.aspect-box > .image-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+/* Thumbnails / matched images: use cover to fill small frames */
+.thumbnail {
+  width: 180px;      /* adjust per UI */
+  height: 120px;     /* adjust per UI */
+  overflow: hidden;
+  display: inline-block;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.03);
+}
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* fill thumbnail nicely */
+  display: block;
+}
+
+/* Small utility to center an image with optional padding */
+.img-center-pad {
+  padding: 8px;
+  box-sizing: border-box;
+}
